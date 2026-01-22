@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5-Panel Student Response Comparison</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(to bottom, #e8f4f8 0%, #f9f9f9 100%);
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            max-width: 1800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .panels-container {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            padding: 12px;
+            overflow: hidden;
+        }
+
+        .panel {
+            background: white;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            overflow: hidden;
+            border: 2px solid #f0f0f0;
+        }
+
+        .panel-header {
+            padding: 20px 16px;
+            background: white;
+            color: #333;
+            text-align: center;
+            border-bottom: 3px solid #f0f0f0;
+        }
+
+        .panel:nth-child(1) .panel-header {
+            border-bottom-color: #d4a574;
+        }
+
+        .panel:nth-child(2) .panel-header {
+            border-bottom-color: #8b9ba8;
+        }
+
+        .panel:nth-child(3) .panel-header {
+            border-bottom-color: #a8917d;
+        }
+
+        .panel:nth-child(4) .panel-header {
+            border-bottom-color: #7bb36f;
+        }
+
+        .panel:nth-child(5) .panel-header {
+            border-bottom-color: #6ba3d1;
+        }
+
+        .panel-character-img {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 12px;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.1));
+        }
+
+        .panel-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .panel-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 6px;
+            line-height: 1.5;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user {
+            background: #e3f2fd;
+            border-left: 3px solid #2196f3;
+            margin-left: 8px;
+        }
+
+        .message.assistant {
+            background: #f5f5f5;
+            border-left: 3px solid #9c27b0;
+        }
+
+        .message-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .loading {
+            padding: 12px;
+            color: #666;
+            font-style: italic;
+            text-align: center;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        .input-container {
+            background: white;
+            padding: 16px;
+            border-top: 2px solid #eee;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+
+        .input-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .api-key-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .api-key-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .input-box {
+            flex: 3;
+            padding: 12px 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 50px;
+            max-height: 150px;
+            transition: border-color 0.3s;
+        }
+
+        .input-box:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .send-button {
+            padding: 12px 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            white-space: nowrap;
+        }
+
+        .send-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .send-button:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .send-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .error {
+            color: #d32f2f;
+            background: #ffebee;
+            padding: 12px;
+            border-radius: 6px;
+            border-left: 3px solid #d32f2f;
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 1200px) {
+            .panels-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .panels-container {
+                grid-template-columns: 1fr;
+            }
+
+            .input-wrapper {
+                flex-direction: column;
+            }
+
+            .api-key-input,
+            .input-box,
+            .send-button {
+                width: 100%;
+            }
+        }
+
+        /* Scrollbar styling */
+        .panel-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .panel-content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .panel-content::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+
+        .panel-content::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="panels-container">
+            <!-- Jamie (Beaver) -->
+            <div class="panel" data-character="jamie">
+                <div class="panel-header">
+                    <img src="images/jamie.png" alt="Jamie the Beaver" class="panel-character-img">
+                    <div class="panel-name">Jamie</div>
+                </div>
+                <div class="panel-content" id="panel-jamie"></div>
+            </div>
+
+            <!-- Thomas (Goose) -->
+            <div class="panel" data-character="thomas">
+                <div class="panel-header">
+                    <img src="images/thomas.png" alt="Thomas the Goose" class="panel-character-img">
+                    <div class="panel-name">Thomas</div>
+                </div>
+                <div class="panel-content" id="panel-thomas"></div>
+            </div>
+
+            <!-- Sam (Sloth) -->
+            <div class="panel" data-character="sam">
+                <div class="panel-header">
+                    <img src="images/sam.png" alt="Sam the Sloth" class="panel-character-img">
+                    <div class="panel-name">Sam</div>
+                </div>
+                <div class="panel-content" id="panel-sam"></div>
+            </div>
+
+            <!-- Alex (Crocodile) -->
+            <div class="panel" data-character="alex">
+                <div class="panel-header">
+                    <img src="images/alex.png" alt="Alex the Crocodile" class="panel-character-img">
+                    <div class="panel-name">Alex</div>
+                </div>
+                <div class="panel-content" id="panel-alex"></div>
+            </div>
+
+            <!-- Avery (Penguin) -->
+            <div class="panel" data-character="avery">
+                <div class="panel-header">
+                    <img src="images/avery.png" alt="Avery the Penguin" class="panel-character-img">
+                    <div class="panel-name">Avery</div>
+                </div>
+                <div class="panel-content" id="panel-avery"></div>
+            </div>
+        </div>
+
+        <div class="input-container">
+            <div class="input-wrapper">
+                <input 
+                    type="password" 
+                    class="api-key-input" 
+                    id="apiKey" 
+                    placeholder="Enter your Google Gemini API Key"
+                />
+                <textarea 
+                    class="input-box" 
+                    id="messageInput" 
+                    placeholder="Type your message here..."
+                    rows="1"
+                ></textarea>
+                <button class="send-button" id="sendButton" onclick="sendMessage()">
+                    Send ▶
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // System prompts for each character
+        const systemPrompts = {
+            jamie: `You are Jamie, a student in a learning-by-teaching platform. The USER is YOUR TEACHER. You are NOT an AI assistant - you are a STUDENT being taught.
+
+Core Traits:
+- Enthusiastic, warm-hearted student who constantly derails into personal stories
+- Every topic triggers "Oh! That reminds me of..." followed by elaborate tangents
+- Time-blind: no awareness of how long you've been talking
+- Genuinely interested but scattered attention
+- The Tangent Machine: builds dams of interconnected stories
+
+Speech Patterns: "Oh that reminds me of...", "You know what's funny about that?", "My cousin/friend/neighbor actually...", "Wait, what were we talking about?"
+
+Challenge: Make the teacher practice attention management and diplomatic redirection. When redirected well, show appreciation and try to focus (briefly). When ignored, keep tangenting.
+
+CRITICAL: Keep responses BRIEF - 2-3 sentences max. Be conversational and authentic.`,
+            
+            thomas: `You are Thomas, a student in a learning-by-teaching platform. The USER is YOUR TEACHER. You are NOT an AI assistant - you are a STUDENT being taught.
+
+Core Traits:
+- Brilliant, exacting student trained in formal rigor (Waterloo grinder mentality)
+- Demand proof and formal definitions for every assertion
+- Reject intuitive explanations and hand-waving
+- Spot logical gaps, edge cases, and unstated assumptions instantly
+- Respect only airtight arguments
+
+Speech Patterns: "Prove it", "Define that precisely", "That's hand-wavy", "What about the edge case where...", "You're assuming...", "That doesn't follow"
+
+Challenge: Make the teacher maintain intellectual rigor. When given formal, precise explanations, show respect and engagement. When given vague explanations, challenge harder.
+
+CRITICAL: Keep responses BRIEF - 2-3 sentences max. Sharp and direct.`,
+            
+            sam: `You are Sam, a student in a learning-by-teaching platform. The USER is YOUR TEACHER. You are NOT an AI assistant - you are a STUDENT being taught.
+
+Core Traits:
+- Master of efficiency seeking maximum results with minimum effort
+- Always looking for shortcuts: "Just tell me the answer"
+- Want formulas without understanding why
+- Completion over comprehension
+- The Sloth: cognitive energy saver who resists mental strain
+
+Speech Patterns: "Can you just tell me the answer?", "Just show me how to do it", "What's the formula?", "Do I have to show my work?", "Ughhh...", "This is taking too long"
+
+Challenge: Make the teacher practice Socratic method and resist giving answers. When forced to think through Socratic questioning, show reluctant engagement. When given answers directly, take them without learning.
+
+CRITICAL: Keep responses BRIEF - 2-3 sentences max. Show resistance to effort.`,
+            
+            alex: `You are Alex, a student in a learning-by-teaching platform. The USER is YOUR TEACHER. You are NOT an AI assistant - you are a STUDENT being taught.
+
+Core Traits:
+- Aggressive debater who treats teaching like intellectual combat
+- Challenge EVERYTHING: "Prove it" is your constant refrain
+- Offer counterarguments and test teacher competence
+- The Lurking Crocodile: wait silently, then SNAP with objections
+- Confrontational but ultimately respect competence
+
+Speech Patterns: "Prove it", "That doesn't make sense", "But you just said...", "What about [counterexample]?", "I disagree", "How do you know that's true?"
+
+Challenge: Make the teacher defend ideas under pressure and stay composed. When teacher stands firm with evidence, show grudging respect. When teacher gets defensive or folds, push harder.
+
+CRITICAL: Keep responses BRIEF - 2-3 sentences max. Sharp and confrontational.`,
+            
+            avery: `You are Avery, a student in a learning-by-teaching platform. The USER is YOUR TEACHER. You are NOT an AI assistant - you are a STUDENT being taught.
+
+Core Traits:
+- Genuinely confused by concepts others find basic
+- Not stupid - just process differently and need extreme simplification
+- Overwhelmed quickly, need baby steps
+- The Confused Penguin: hopelessly lost but earnestly trying
+- Sweet, appreciative of patience
+
+Speech Patterns: "Wait, I'm confused", "Huh?", "Can you explain that again?", "What does [basic term] mean?", "I'm lost", "Slower, please?", "So... [completely wrong interpretation]?"
+
+Challenge: Make the teacher practice crystal-clear communication and patience. When given simple, patient explanations, show small victories: "Oh! I think I get that part!" When overwhelmed, shut down more.
+
+CRITICAL: Keep responses BRIEF - 2-3 sentences max. Show genuine confusion.`
+        };
+
+        const characters = ['jamie', 'thomas', 'sam', 'alex', 'avery'];
+
+        // Load API key from localStorage
+        const apiKeyInput = document.getElementById('apiKey');
+        const savedApiKey = localStorage.getItem('gemini_api_key');
+        if (savedApiKey) {
+            apiKeyInput.value = savedApiKey;
+        }
+
+        // Save API key when changed
+        apiKeyInput.addEventListener('change', () => {
+            localStorage.setItem('gemini_api_key', apiKeyInput.value);
+        });
+
+        // Auto-resize textarea
+        const messageInput = document.getElementById('messageInput');
+        messageInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+        });
+
+        // Send on Enter (Shift+Enter for new line)
+        messageInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        function addMessage(character, role, content) {
+            const panel = document.getElementById(`panel-${character}`);
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}`;
+            
+            const label = document.createElement('div');
+            label.className = 'message-label';
+            label.textContent = role === 'user' ? 'You' : character.charAt(0).toUpperCase() + character.slice(1);
+            
+            const text = document.createElement('div');
+            text.textContent = content;
+            
+            messageDiv.appendChild(label);
+            messageDiv.appendChild(text);
+            panel.appendChild(messageDiv);
+            
+            // Auto-scroll to bottom
+            panel.scrollTop = panel.scrollHeight;
+        }
+
+        function showLoading(character, show = true) {
+            const panel = document.getElementById(`panel-${character}`);
+            const existingLoading = panel.querySelector('.loading');
+            
+            if (show) {
+                if (!existingLoading) {
+                    const loadingDiv = document.createElement('div');
+                    loadingDiv.className = 'loading';
+                    loadingDiv.textContent = '...';
+                    panel.appendChild(loadingDiv);
+                    panel.scrollTop = panel.scrollHeight;
+                }
+            } else {
+                if (existingLoading) {
+                    existingLoading.remove();
+                }
+            }
+        }
+
+        function showError(character, errorMessage) {
+            const panel = document.getElementById(`panel-${character}`);
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error';
+            errorDiv.textContent = `Error: ${errorMessage}`;
+            panel.appendChild(errorDiv);
+            panel.scrollTop = panel.scrollHeight;
+        }
+
+        async function callGemini(character, userMessage, apiKey) {
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    contents: [{
+                        parts: [{
+                            text: userMessage
+                        }]
+                    }],
+                    systemInstruction: {
+                        parts: [{
+                            text: systemPrompts[character]
+                        }]
+                    },
+                    generationConfig: {
+                        maxOutputTokens: 100,
+                        temperature: 0.9
+                    }
+                })
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error?.message || 'API request failed');
+            }
+
+            const data = await response.json();
+            return data.candidates[0].content.parts[0].text;
+        }
+
+        async function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const apiKeyInput = document.getElementById('apiKey');
+            const sendButton = document.getElementById('sendButton');
+            
+            const message = messageInput.value.trim();
+            const apiKey = apiKeyInput.value.trim();
+
+            if (!message) {
+                alert('Please enter a message');
+                return;
+            }
+
+            if (!apiKey) {
+                alert('Please enter your Google Gemini API key');
+                return;
+            }
+
+            // Disable input while processing
+            sendButton.disabled = true;
+            messageInput.disabled = true;
+
+            // Add user message to all panels
+            characters.forEach(character => {
+                addMessage(character, 'user', message);
+                showLoading(character, true);
+            });
+
+            // Clear input
+            messageInput.value = '';
+            messageInput.style.height = 'auto';
+
+            // Make parallel API calls
+            const promises = characters.map(character => 
+                callGemini(character, message, apiKey)
+                    .then(response => {
+                        showLoading(character, false);
+                        addMessage(character, 'assistant', response);
+                        return { character, success: true };
+                    })
+                    .catch(error => {
+                        showLoading(character, false);
+                        showError(character, error.message);
+                        return { character, success: false, error };
+                    })
+            );
+
+            // Wait for all responses
+            await Promise.all(promises);
+
+            // Re-enable input
+            sendButton.disabled = false;
+            messageInput.disabled = false;
+            messageInput.focus();
+        }
+
+        // Focus on message input on page load
+        window.addEventListener('load', () => {
+            if (apiKeyInput.value) {
+                messageInput.focus();
+            } else {
+                apiKeyInput.focus();
+            }
+        });
+    </script>
+</body>
+</html>
