@@ -12,17 +12,40 @@ An interactive web application where you teach 5 AI students with distinct perso
 
 ## Quick Start
 
-1. Open `index.html` in your browser
-2. Enter your Google Gemini API key ([Get one here](https://makersuite.google.com/app/apikey))
-3. Start teaching!
+### Option 1: With Backend (Recommended - Secure & Convenient)
+
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+2. Create a `.env` file and add your API key:
+   ```env
+   GEMINI_API_KEY=your_api_key_here
+   ```
+   Get your API key: [Google AI Studio](https://makersuite.google.com/app/apikey)
+
+3. Start the server:
+   ```bash
+   npm start
+   ```
+
+4. Open your browser to `http://localhost:3000`
+
+**See [SETUP.md](SETUP.md) for detailed setup instructions!**
+
+### Option 2: Static HTML (Legacy)
+
+Open `index.html` directly, but you'll need to modify it to accept API keys again.
 
 ## Features
 
-- 5 parallel AI responses with unique personalities
-- Real-time interaction
-- Beautiful character illustrations
-- Cost-effective (uses Gemini API)
-- No backend required
+- 🔒 **Secure Backend**: API key stored safely on server
+- 🤖 **5 Unique AI Students**: Parallel responses with distinct personalities
+- 💬 **Real-time Interaction**: Instant feedback from all students
+- 🎨 **Beautiful UI**: Character illustrations and modern design
+- 💰 **Cost-effective**: Uses Google's Gemini API
+- ⚡ **Fast**: Parallel API calls for quick responses
 
 ## Try These Prompts
 
@@ -36,9 +59,15 @@ Watch how differently each student responds!
 
 ```
 agent-test/
-├── index.html              # Main application
-├── images/                 # Character illustrations
-└── characters/             # Detailed character documentation
+├── server.js               # Express backend server
+├── package.json            # Node.js dependencies
+├── .env                    # API key (create this - not in repo!)
+├── .gitignore             # Prevents API key from being committed
+├── index.html             # Main application
+├── student-panel.html     # Single panel view
+├── images/                # Character illustrations
+├── characters/            # Detailed character documentation
+└── SETUP.md              # Detailed setup guide
 ```
 
 ## Educational Philosophy
