@@ -47,14 +47,6 @@ Open `index.html` directly, but you'll need to modify it to accept API keys agai
 - 💰 **Cost-effective**: Uses Google's Gemini API
 - ⚡ **Fast**: Parallel API calls for quick responses
 
-## Try These Prompts
-
-- "Explain photosynthesis to me"
-- "How do I solve quadratic equations?"
-- "What is machine learning?"
-
-Watch how differently each student responds!
-
 ## Project Structure
 
 ```
