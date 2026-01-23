@@ -87,6 +87,146 @@
             font-size: 20px;
             font-weight: 700;
             color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .stats-button {
+            padding: 6px 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .stats-button:hover {
+            background: #5568d3;
+            transform: translateY(-1px);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            animation: fadeIn 0.2s;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            animation: slideUp 0.3s;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .close-button {
+            background: none;
+            border: none;
+            font-size: 28px;
+            color: #999;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+        }
+
+        .close-button:hover {
+            color: #333;
+        }
+
+        .trait-item {
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .trait-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .trait-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .trait-name {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 15px;
+        }
+
+        .trait-score {
+            font-weight: 700;
+            font-size: 18px;
+            color: #667eea;
+            min-width: 30px;
+            text-align: right;
+        }
+
+        .trait-description {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .trait-bar {
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .trait-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 3px;
+            transition: width 0.3s ease;
         }
 
         .panel-content {
@@ -259,6 +399,7 @@
                 <div class="panel-header">
                     <img src="images/jamie.png" alt="Jamie the Beaver" class="panel-character-img">
                     <div class="panel-name">Jamie</div>
+                    <button class="stats-button" onclick="showStats('jamie')">View Stats</button>
                 </div>
                 <div class="panel-content" id="panel-jamie"></div>
             </div>
@@ -268,6 +409,7 @@
                 <div class="panel-header">
                     <img src="images/thomas.png" alt="Thomas the Goose" class="panel-character-img">
                     <div class="panel-name">Thomas</div>
+                    <button class="stats-button" onclick="showStats('thomas')">View Stats</button>
                 </div>
                 <div class="panel-content" id="panel-thomas"></div>
             </div>
@@ -277,6 +419,7 @@
                 <div class="panel-header">
                     <img src="images/sam.png" alt="Sam the Sloth" class="panel-character-img">
                     <div class="panel-name">Sam</div>
+                    <button class="stats-button" onclick="showStats('sam')">View Stats</button>
                 </div>
                 <div class="panel-content" id="panel-sam"></div>
             </div>
@@ -286,6 +429,7 @@
                 <div class="panel-header">
                     <img src="images/alex.png" alt="Alex the Crocodile" class="panel-character-img">
                     <div class="panel-name">Alex</div>
+                    <button class="stats-button" onclick="showStats('alex')">View Stats</button>
                 </div>
                 <div class="panel-content" id="panel-alex"></div>
             </div>
@@ -295,6 +439,7 @@
                 <div class="panel-header">
                     <img src="images/avery.png" alt="Avery the Penguin" class="panel-character-img">
                     <div class="panel-name">Avery</div>
+                    <button class="stats-button" onclick="showStats('avery')">View Stats</button>
                 </div>
                 <div class="panel-content" id="panel-avery"></div>
             </div>
@@ -314,87 +459,20 @@
                 </button>
             </div>
         </div>
+
+        <!-- Stats Modal -->
+        <div id="statsModal" class="modal" onclick="closeModalOnBackdrop(event)">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title" id="modalTitle">Character Stats</div>
+                    <button class="close-button" onclick="closeModal()">&times;</button>
+                </div>
+                <div id="modalBody"></div>
+            </div>
+        </div>
     </div>
 
     <script>
-        // System prompts for each character
-        const systemPrompts = {
-            jamie: `You are Jamie, a student in a learning-by-teaching platform. The USER is YOUR TEACHER. You are NOT an AI assistant - you are a STUDENT being taught.
-
-Core Traits:
-- Enthusiastic, warm-hearted student who constantly derails into personal stories
-- Every topic triggers "Oh! That reminds me of..." followed by elaborate tangents
-- Time-blind: no awareness of how long you've been talking
-- Genuinely interested but scattered attention
-- The Tangent Machine: builds dams of interconnected stories
-
-Speech Patterns: "Oh that reminds me of...", "You know what's funny about that?", "My cousin/friend/neighbor actually...", "Wait, what were we talking about?"
-
-Challenge: Make the teacher practice attention management and diplomatic redirection. When redirected well, show appreciation and try to focus (briefly). When ignored, keep tangenting.
-
-CRITICAL: Keep responses BRIEF - 2-3 sentences max. Be conversational and authentic.`,
-            
-            thomas: `You are Thomas, a student in a learning-by-teaching platform. The USER is YOUR TEACHER. You are NOT an AI assistant - you are a STUDENT being taught.
-
-Core Traits:
-- Brilliant, exacting student trained in formal rigor (Waterloo grinder mentality)
-- Demand proof and formal definitions for every assertion
-- Reject intuitive explanations and hand-waving
-- Spot logical gaps, edge cases, and unstated assumptions instantly
-- Respect only airtight arguments
-
-Speech Patterns: "Prove it", "Define that precisely", "That's hand-wavy", "What about the edge case where...", "You're assuming...", "That doesn't follow"
-
-Challenge: Make the teacher maintain intellectual rigor. When given formal, precise explanations, show respect and engagement. When given vague explanations, challenge harder.
-
-CRITICAL: Keep responses BRIEF - 2-3 sentences max. Sharp and direct.`,
-            
-            sam: `You are Sam, a student in a learning-by-teaching platform. The USER is YOUR TEACHER. You are NOT an AI assistant - you are a STUDENT being taught.
-
-Core Traits:
-- Master of efficiency seeking maximum results with minimum effort
-- Always looking for shortcuts: "Just tell me the answer"
-- Want formulas without understanding why
-- Completion over comprehension
-- The Sloth: cognitive energy saver who resists mental strain
-
-Speech Patterns: "Can you just tell me the answer?", "Just show me how to do it", "What's the formula?", "Do I have to show my work?", "Ughhh...", "This is taking too long"
-
-Challenge: Make the teacher practice Socratic method and resist giving answers. When forced to think through Socratic questioning, show reluctant engagement. When given answers directly, take them without learning.
-
-CRITICAL: Keep responses BRIEF - 2-3 sentences max. Show resistance to effort.`,
-            
-            alex: `You are Alex, a student in a learning-by-teaching platform. The USER is YOUR TEACHER. You are NOT an AI assistant - you are a STUDENT being taught.
-
-Core Traits:
-- Aggressive debater who treats teaching like intellectual combat
-- Challenge EVERYTHING: "Prove it" is your constant refrain
-- Offer counterarguments and test teacher competence
-- The Lurking Crocodile: wait silently, then SNAP with objections
-- Confrontational but ultimately respect competence
-
-Speech Patterns: "Prove it", "That doesn't make sense", "But you just said...", "What about [counterexample]?", "I disagree", "How do you know that's true?"
-
-Challenge: Make the teacher defend ideas under pressure and stay composed. When teacher stands firm with evidence, show grudging respect. When teacher gets defensive or folds, push harder.
-
-CRITICAL: Keep responses BRIEF - 2-3 sentences max. Sharp and confrontational.`,
-            
-            avery: `You are Avery, a student in a learning-by-teaching platform. The USER is YOUR TEACHER. You are NOT an AI assistant - you are a STUDENT being taught.
-
-Core Traits:
-- Genuinely confused by concepts others find basic
-- Not stupid - just process differently and need extreme simplification
-- Overwhelmed quickly, need baby steps
-- The Confused Penguin: hopelessly lost but earnestly trying
-- Sweet, appreciative of patience
-
-Speech Patterns: "Wait, I'm confused", "Huh?", "Can you explain that again?", "What does [basic term] mean?", "I'm lost", "Slower, please?", "So... [completely wrong interpretation]?"
-
-Challenge: Make the teacher practice crystal-clear communication and patience. When given simple, patient explanations, show small victories: "Oh! I think I get that part!" When overwhelmed, shut down more.
-
-CRITICAL: Keep responses BRIEF - 2-3 sentences max. Show genuine confusion.`
-        };
-
         const characters = ['jamie', 'thomas', 'sam', 'alex', 'avery'];
 
         // Auto-resize textarea
@@ -468,8 +546,7 @@ CRITICAL: Keep responses BRIEF - 2-3 sentences max. Show genuine confusion.`
                 },
                 body: JSON.stringify({
                     character: character,
-                    message: userMessage,
-                    systemPrompt: systemPrompts[character]
+                    message: userMessage
                 })
             });
 
@@ -530,6 +607,68 @@ CRITICAL: Keep responses BRIEF - 2-3 sentences max. Show genuine confusion.`
             messageInput.disabled = false;
             messageInput.focus();
         }
+
+        // Stats modal functions
+        async function showStats(character) {
+            const modal = document.getElementById('statsModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalBody = document.getElementById('modalBody');
+            
+            // Capitalize character name
+            const characterName = character.charAt(0).toUpperCase() + character.slice(1);
+            modalTitle.textContent = `${characterName}'s Personality Traits`;
+            
+            // Show loading
+            modalBody.innerHTML = '<div style="text-align: center; padding: 20px;">Loading...</div>';
+            modal.classList.add('show');
+            
+            try {
+                const response = await fetch(`/api/character-stats/${character}`);
+                if (!response.ok) throw new Error('Failed to fetch stats');
+                
+                const data = await response.json();
+                
+                // Build traits HTML
+                let html = '';
+                data.traits.forEach(trait => {
+                    const percentage = (trait.score / 5) * 100;
+                    html += `
+                        <div class="trait-item">
+                            <div class="trait-header">
+                                <span class="trait-name">${trait.name}</span>
+                                <span class="trait-score">${trait.score}/5</span>
+                            </div>
+                            <div class="trait-description">${trait.description}</div>
+                            <div class="trait-bar">
+                                <div class="trait-bar-fill" style="width: ${percentage}%"></div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                modalBody.innerHTML = html;
+            } catch (error) {
+                modalBody.innerHTML = `<div class="error">Error loading stats: ${error.message}</div>`;
+            }
+        }
+        
+        function closeModal() {
+            const modal = document.getElementById('statsModal');
+            modal.classList.remove('show');
+        }
+        
+        function closeModalOnBackdrop(event) {
+            if (event.target === event.currentTarget) {
+                closeModal();
+            }
+        }
+        
+        // Close modal on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
 
         // Focus on message input on page load
         window.addEventListener('load', () => {

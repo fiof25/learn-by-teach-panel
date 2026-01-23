@@ -1,10 +1,64 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs').promises;
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Character name to file mapping
+const CHARACTER_FILES = {
+    'jamie': 'JAMIE_BEAVER.md',
+    'thomas': 'THOMAS_GOOSE.md',
+    'sam': 'SAM_SLOTH.md',
+    'alex': 'ALEX_CROCODILE.md',
+    'avery': 'AVERY_PENGUIN.md'
+};
+
+// Cache for system instructions (load once)
+let systemInstructionBase = null;
+
+// Load system instruction base
+async function getSystemInstructionBase() {
+    if (!systemInstructionBase) {
+        const systemPath = path.join(__dirname, 'characters', 'SYSTEM_INSTRUCTION.md');
+        systemInstructionBase = await fs.readFile(systemPath, 'utf-8');
+    }
+    return systemInstructionBase;
+}
+
+// Load character profile
+async function getCharacterProfile(character) {
+    const filename = CHARACTER_FILES[character];
+    if (!filename) {
+        throw new Error(`Unknown character: ${character}`);
+    }
+    const characterPath = path.join(__dirname, 'characters', filename);
+    return await fs.readFile(characterPath, 'utf-8');
+}
+
+// Combine system instruction and character profile
+async function getSystemPrompt(character) {
+    const baseInstruction = await getSystemInstructionBase();
+    const characterProfile = await getCharacterProfile(character);
+    
+    return `${baseInstruction}
+
+---
+
+# YOUR CHARACTER PROFILE
+
+${characterProfile}
+
+---
+
+CRITICAL INSTRUCTIONS:
+- Keep responses BRIEF: 2-3 sentences maximum
+- Stay completely in character based on your trait scores
+- Never break character or explain teaching strategies
+- Respond authentically as this specific student would respond`;
+}
 
 // Middleware
 app.use(cors());
@@ -23,12 +77,12 @@ app.get('/student-panel', (req, res) => {
 // Proxy endpoint for Gemini API
 app.post('/api/generate', async (req, res) => {
     try {
-        const { character, message, systemPrompt } = req.body;
+        const { character, message } = req.body;
 
         // Validate request
-        if (!character || !message || !systemPrompt) {
+        if (!character || !message) {
             return res.status(400).json({ 
-                error: 'Missing required fields: character, message, or systemPrompt' 
+                error: 'Missing required fields: character or message' 
             });
         }
 
@@ -38,6 +92,9 @@ app.post('/api/generate', async (req, res) => {
                 error: 'Server configuration error: API key not set' 
             });
         }
+
+        // Load system prompt from markdown files
+        const systemPrompt = await getSystemPrompt(character);
 
         // Make request to Gemini API
         const response = await fetch(
@@ -83,6 +140,37 @@ app.post('/api/generate', async (req, res) => {
         console.error('Error calling Gemini API:', error);
         res.status(500).json({ 
             error: error.message || 'Failed to generate response' 
+        });
+    }
+});
+
+// Get character stats/traits
+app.get('/api/character-stats/:character', async (req, res) => {
+    try {
+        const character = req.params.character;
+        const characterProfile = await getCharacterProfile(character);
+        
+        // Parse the trait table from markdown
+        const traitRegex = /\|\s*\*\*(.+?)\*\*\s*\|\s*(\d+)\s*\|\s*(.+?)\s*\|/g;
+        const traits = [];
+        let match;
+        
+        while ((match = traitRegex.exec(characterProfile)) !== null) {
+            traits.push({
+                name: match[1].trim(),
+                score: parseInt(match[2]),
+                description: match[3].trim()
+            });
+        }
+        
+        res.json({
+            character,
+            traits
+        });
+    } catch (error) {
+        console.error('Error fetching character stats:', error);
+        res.status(500).json({ 
+            error: error.message || 'Failed to fetch character stats' 
         });
     }
 });
