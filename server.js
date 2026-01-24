@@ -54,6 +54,7 @@ ${characterProfile}
 ---
 
 CRITICAL INSTRUCTIONS:
+- MAXIMUM LENGTH: 350 characters. Be concise!
 - Keep responses BRIEF: 2-3 sentences maximum
 - Stay completely in character based on your trait scores
 - Never break character or explain teaching strategies
@@ -77,7 +78,7 @@ app.get('/student-panel', (req, res) => {
 // Proxy endpoint for Gemini API
 app.post('/api/generate', async (req, res) => {
     try {
-        const { character, message } = req.body;
+        const { character, message, history } = req.body;
 
         // Validate request
         if (!character || !message) {
@@ -96,6 +97,22 @@ app.post('/api/generate', async (req, res) => {
         // Load system prompt from markdown files
         const systemPrompt = await getSystemPrompt(character);
 
+        // Construct the contents array for the API
+        // Start with history if provided, otherwise start empty
+        let contents = [];
+        if (history && Array.isArray(history)) {
+            contents = history.map(msg => ({
+                role: msg.role === 'user' ? 'user' : 'model',
+                parts: [{ text: msg.content }]
+            }));
+        }
+
+        // Add the current message
+        contents.push({
+            role: 'user',
+            parts: [{ text: message }]
+        });
+
         // Make request to Gemini API
         const response = await fetch(
             `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${process.env.GEMINI_API_KEY}`,
@@ -105,18 +122,14 @@ app.post('/api/generate', async (req, res) => {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    contents: [{
-                        parts: [{
-                            text: message
-                        }]
-                    }],
+                    contents: contents,
                     systemInstruction: {
                         parts: [{
                             text: systemPrompt
                         }]
                     },
                     generationConfig: {
-                        maxOutputTokens: 100,
+                        maxOutputTokens: 1000,
                         temperature: 0.9
                     }
                 })
@@ -129,7 +142,20 @@ app.post('/api/generate', async (req, res) => {
         }
 
         const data = await response.json();
-        const responseText = data.candidates[0].content.parts[0].text;
+        
+        // Handle response parsing
+        let responseText = '';
+        if (data.candidates && data.candidates[0]) {
+            const candidate = data.candidates[0];
+            if (candidate.content && candidate.content.parts && candidate.content.parts[0]) {
+                responseText = candidate.content.parts[0].text || '';
+            }
+        }
+        
+        if (!responseText) {
+            console.error('Unexpected API response structure:', JSON.stringify(data, null, 2));
+            throw new Error('Failed to parse response from API');
+        }
 
         res.json({ 
             character, 
@@ -151,18 +177,15 @@ app.get('/api/character-stats/:character', async (req, res) => {
         const characterProfile = await getCharacterProfile(character);
         
         // Parse the trait table from markdown
-        // Handles both numerical scores (1-5) and the categorical "Cognitive Style"
-        // Tightened regex to avoid capturing stray pipes
         const traitRegex = /\|\s*([^|]+?)\s*\|\s*(1|2|3|4|5|Concrete|Flexible|Abstract)\s*\|\s*([^|]+?)\s*\|/g;
         const traits = [];
         let match;
         
         while ((match = traitRegex.exec(characterProfile)) !== null) {
-            const name = match[1].trim().replace(/^\|\s*/, ''); // Extra safety to remove leading pipes
+            const name = match[1].trim().replace(/^\|\s*/, '');
             const scoreVal = match[2].trim();
             const meaning = match[3].trim();
             
-            // Skip the header row if it's accidentally matched
             if (name.toLowerCase() === 'trait' || name === '-------') continue;
             
             traits.push({
@@ -171,10 +194,18 @@ app.get('/api/character-stats/:character', async (req, res) => {
                 meaning: meaning
             });
         }
+
+        // Extract one-line description from Personality section
+        let description = "No description available.";
+        const personalityMatch = characterProfile.match(/## Personality\s*\n+([^.]+?\.)/);
+        if (personalityMatch && personalityMatch[1]) {
+            description = personalityMatch[1].trim();
+        }
         
         res.json({
             character,
-            traits
+            traits,
+            description
         });
     } catch (error) {
         console.error('Error fetching character stats:', error);

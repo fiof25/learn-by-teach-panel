@@ -247,6 +247,45 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .individual-input-container {
+            padding: 12px;
+            background: #fdfdfd;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .individual-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 13px;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .individual-input:focus {
+            border-color: #667eea;
+        }
+
+        .individual-send-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 10px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.2s;
+        }
+
+        .individual-send-btn:hover {
+            background: #5568d3;
         }
 
         .message {
@@ -413,6 +452,10 @@
                     <button class="stats-button" onclick="showStats('jamie')">View Stats</button>
                 </div>
                 <div class="panel-content" id="panel-jamie"></div>
+                <div class="individual-input-container">
+                    <input type="text" class="individual-input" placeholder="Chat with Jamie..." onkeydown="handleIndividualKey(event, 'jamie')">
+                    <button class="individual-send-btn" onclick="sendIndividualMessage('jamie')">Send</button>
+                </div>
             </div>
 
             <!-- Thomas (Goose) -->
@@ -423,6 +466,10 @@
                     <button class="stats-button" onclick="showStats('thomas')">View Stats</button>
                 </div>
                 <div class="panel-content" id="panel-thomas"></div>
+                <div class="individual-input-container">
+                    <input type="text" class="individual-input" placeholder="Chat with Thomas..." onkeydown="handleIndividualKey(event, 'thomas')">
+                    <button class="individual-send-btn" onclick="sendIndividualMessage('thomas')">Send</button>
+                </div>
             </div>
 
             <!-- Sam (Sloth) -->
@@ -433,6 +480,10 @@
                     <button class="stats-button" onclick="showStats('sam')">View Stats</button>
                 </div>
                 <div class="panel-content" id="panel-sam"></div>
+                <div class="individual-input-container">
+                    <input type="text" class="individual-input" placeholder="Chat with Sam..." onkeydown="handleIndividualKey(event, 'sam')">
+                    <button class="individual-send-btn" onclick="sendIndividualMessage('sam')">Send</button>
+                </div>
             </div>
 
             <!-- Alex (Crocodile) -->
@@ -443,6 +494,10 @@
                     <button class="stats-button" onclick="showStats('alex')">View Stats</button>
                 </div>
                 <div class="panel-content" id="panel-alex"></div>
+                <div class="individual-input-container">
+                    <input type="text" class="individual-input" placeholder="Chat with Alex..." onkeydown="handleIndividualKey(event, 'alex')">
+                    <button class="individual-send-btn" onclick="sendIndividualMessage('alex')">Send</button>
+                </div>
             </div>
 
             <!-- Avery (Penguin) -->
@@ -453,6 +508,10 @@
                     <button class="stats-button" onclick="showStats('avery')">View Stats</button>
                 </div>
                 <div class="panel-content" id="panel-avery"></div>
+                <div class="individual-input-container">
+                    <input type="text" class="individual-input" placeholder="Chat with Avery..." onkeydown="handleIndividualKey(event, 'avery')">
+                    <button class="individual-send-btn" onclick="sendIndividualMessage('avery')">Send</button>
+                </div>
             </div>
         </div>
 
@@ -485,6 +544,15 @@
 
     <script>
         const characters = ['jamie', 'thomas', 'sam', 'alex', 'avery'];
+        
+        // Maintain chat history for each character
+        const chatHistories = {
+            jamie: [],
+            thomas: [],
+            sam: [],
+            alex: [],
+            avery: []
+        };
 
         // Auto-resize textarea
         const messageInput = document.getElementById('messageInput');
@@ -557,7 +625,8 @@
                 },
                 body: JSON.stringify({
                     character: character,
-                    message: userMessage
+                    message: userMessage,
+                    history: chatHistories[character] // Send history to backend
                 })
             });
 
@@ -567,6 +636,16 @@
             }
 
             const data = await response.json();
+            
+            // Add to history after successful response
+            chatHistories[character].push({ role: 'user', content: userMessage });
+            chatHistories[character].push({ role: 'model', content: data.response });
+            
+            // Limit history to last 5 exchanges (10 messages)
+            if (chatHistories[character].length > 10) {
+                chatHistories[character] = chatHistories[character].slice(-10);
+            }
+
             return data.response;
         }
 
@@ -617,6 +696,45 @@
             sendButton.disabled = false;
             messageInput.disabled = false;
             messageInput.focus();
+        }
+
+        async function sendIndividualMessage(character) {
+            const panel = document.querySelector(`.panel[data-character="${character}"]`);
+            const input = panel.querySelector('.individual-input');
+            const btn = panel.querySelector('.individual-send-btn');
+            
+            const message = input.value.trim();
+            if (!message) return;
+
+            // Disable input
+            input.disabled = true;
+            btn.disabled = true;
+
+            // Add message to panel
+            addMessage(character, 'user', message);
+            showLoading(character, true);
+
+            // Clear input
+            input.value = '';
+
+            try {
+                const response = await callGemini(character, message);
+                showLoading(character, false);
+                addMessage(character, 'assistant', response);
+            } catch (error) {
+                showLoading(character, false);
+                showError(character, error.message);
+            } finally {
+                input.disabled = false;
+                btn.disabled = false;
+                input.focus();
+            }
+        }
+
+        function handleIndividualKey(event, character) {
+            if (event.key === 'Enter') {
+                sendIndividualMessage(character);
+            }
         }
 
         // Stats modal functions
