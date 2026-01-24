@@ -288,6 +288,24 @@
             background: #5568d3;
         }
 
+        .individual-quiz-btn {
+            background: #f0f4ff;
+            color: #667eea;
+            border: 1px solid #667eea;
+            border-radius: 4px;
+            padding: 6px 10px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .individual-quiz-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
         .message {
             padding: 12px;
             border-radius: 6px;
@@ -453,6 +471,7 @@
                 </div>
                 <div class="panel-content" id="panel-jamie"></div>
                 <div class="individual-input-container">
+                    <button class="individual-quiz-btn" onclick="askWhatLearned('jamie')">Quiz 💡</button>
                     <input type="text" class="individual-input" placeholder="Chat with Jamie..." onkeydown="handleIndividualKey(event, 'jamie')">
                     <button class="individual-send-btn" onclick="sendIndividualMessage('jamie')">Send</button>
                 </div>
@@ -467,6 +486,7 @@
                 </div>
                 <div class="panel-content" id="panel-thomas"></div>
                 <div class="individual-input-container">
+                    <button class="individual-quiz-btn" onclick="askWhatLearned('thomas')">Quiz 💡</button>
                     <input type="text" class="individual-input" placeholder="Chat with Thomas..." onkeydown="handleIndividualKey(event, 'thomas')">
                     <button class="individual-send-btn" onclick="sendIndividualMessage('thomas')">Send</button>
                 </div>
@@ -481,6 +501,7 @@
                 </div>
                 <div class="panel-content" id="panel-sam"></div>
                 <div class="individual-input-container">
+                    <button class="individual-quiz-btn" onclick="askWhatLearned('sam')">Quiz 💡</button>
                     <input type="text" class="individual-input" placeholder="Chat with Sam..." onkeydown="handleIndividualKey(event, 'sam')">
                     <button class="individual-send-btn" onclick="sendIndividualMessage('sam')">Send</button>
                 </div>
@@ -495,6 +516,7 @@
                 </div>
                 <div class="panel-content" id="panel-alex"></div>
                 <div class="individual-input-container">
+                    <button class="individual-quiz-btn" onclick="askWhatLearned('alex')">Quiz 💡</button>
                     <input type="text" class="individual-input" placeholder="Chat with Alex..." onkeydown="handleIndividualKey(event, 'alex')">
                     <button class="individual-send-btn" onclick="sendIndividualMessage('alex')">Send</button>
                 </div>
@@ -509,6 +531,7 @@
                 </div>
                 <div class="panel-content" id="panel-avery"></div>
                 <div class="individual-input-container">
+                    <button class="individual-quiz-btn" onclick="askWhatLearned('avery')">Quiz 💡</button>
                     <input type="text" class="individual-input" placeholder="Chat with Avery..." onkeydown="handleIndividualKey(event, 'avery')">
                     <button class="individual-send-btn" onclick="sendIndividualMessage('avery')">Send</button>
                 </div>
@@ -735,6 +758,17 @@
             if (event.key === 'Enter') {
                 sendIndividualMessage(character);
             }
+        }
+
+        async function askWhatLearned(character) {
+            const panel = document.querySelector(`.panel[data-character="${character}"]`);
+            const input = panel.querySelector('.individual-input');
+            
+            // Set a predefined prompt
+            input.value = "What have you learned so far?";
+            
+            // Send it immediately
+            sendIndividualMessage(character);
         }
 
         // Stats modal functions
