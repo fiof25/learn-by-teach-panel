@@ -129,7 +129,7 @@
             background: white;
             padding: 30px;
             border-radius: 16px;
-            max-width: 500px;
+            max-width: 550px;
             width: 90%;
             box-shadow: 0 10px 40px rgba(0,0,0,0.2);
             animation: slideUp 0.3s;
@@ -176,8 +176,8 @@
         }
 
         .trait-item {
-            margin-bottom: 16px;
-            padding-bottom: 16px;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
             border-bottom: 1px solid #eee;
         }
 
@@ -191,34 +191,34 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
         }
 
         .trait-name {
             font-weight: 600;
             color: #2c3e50;
-            font-size: 15px;
+            font-size: 14px;
         }
 
         .trait-score {
             font-weight: 700;
-            font-size: 18px;
+            font-size: 16px;
             color: #667eea;
             min-width: 30px;
             text-align: right;
         }
 
-        .trait-description {
-            font-size: 13px;
+        .trait-meaning {
+            font-size: 12px;
             color: #666;
-            line-height: 1.4;
+            line-height: 1.3;
         }
 
         .trait-bar {
             height: 6px;
             background: #e0e0e0;
             border-radius: 3px;
-            margin-top: 8px;
+            margin-top: 6px;
             overflow: hidden;
         }
 
@@ -227,6 +227,17 @@
             background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
             border-radius: 3px;
             transition: width 0.3s ease;
+        }
+
+        .trait-style-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #f0f4ff;
+            color: #667eea;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 13px;
+            margin-top: 4px;
         }
 
         .panel-content {
@@ -631,19 +642,31 @@
                 // Build traits HTML
                 let html = '';
                 data.traits.forEach(trait => {
-                    const percentage = (trait.score / 5) * 100;
-                    html += `
-                        <div class="trait-item">
-                            <div class="trait-header">
-                                <span class="trait-name">${trait.name}</span>
-                                <span class="trait-score">${trait.score}/5</span>
+                    if (typeof trait.score === 'number') {
+                        const percentage = (trait.score / 5) * 100;
+                        html += `
+                            <div class="trait-item">
+                                <div class="trait-header">
+                                    <span class="trait-name">${trait.name}</span>
+                                    <span class="trait-score">${trait.score}/5</span>
+                                </div>
+                                <div class="trait-meaning">${trait.meaning}</div>
+                                <div class="trait-bar">
+                                    <div class="trait-bar-fill" style="width: ${percentage}%"></div>
+                                </div>
                             </div>
-                            <div class="trait-description">${trait.description}</div>
-                            <div class="trait-bar">
-                                <div class="trait-bar-fill" style="width: ${percentage}%"></div>
+                        `;
+                    } else {
+                        html += `
+                            <div class="trait-item">
+                                <div class="trait-header">
+                                    <span class="trait-name">${trait.name}</span>
+                                </div>
+                                <div class="trait-meaning">${trait.meaning}</div>
+                                <div class="trait-style-badge">${trait.score}</div>
                             </div>
-                        </div>
-                    `;
+                        `;
+                    }
                 });
                 
                 modalBody.innerHTML = html;

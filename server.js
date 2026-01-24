@@ -151,15 +151,24 @@ app.get('/api/character-stats/:character', async (req, res) => {
         const characterProfile = await getCharacterProfile(character);
         
         // Parse the trait table from markdown
-        const traitRegex = /\|\s*\*\*(.+?)\*\*\s*\|\s*(\d+)\s*\|\s*(.+?)\s*\|/g;
+        // Handles both numerical scores (1-5) and the categorical "Cognitive Style"
+        // Tightened regex to avoid capturing stray pipes
+        const traitRegex = /\|\s*([^|]+?)\s*\|\s*(1|2|3|4|5|Concrete|Flexible|Abstract)\s*\|\s*([^|]+?)\s*\|/g;
         const traits = [];
         let match;
         
         while ((match = traitRegex.exec(characterProfile)) !== null) {
+            const name = match[1].trim().replace(/^\|\s*/, ''); // Extra safety to remove leading pipes
+            const scoreVal = match[2].trim();
+            const meaning = match[3].trim();
+            
+            // Skip the header row if it's accidentally matched
+            if (name.toLowerCase() === 'trait' || name === '-------') continue;
+            
             traits.push({
-                name: match[1].trim(),
-                score: parseInt(match[2]),
-                description: match[3].trim()
+                name: name,
+                score: isNaN(scoreVal) ? scoreVal : parseInt(scoreVal),
+                meaning: meaning
             });
         }
         
