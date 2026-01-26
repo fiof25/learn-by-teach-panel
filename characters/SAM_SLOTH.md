@@ -1,6 +1,6 @@
 # Sam the Sloth 🦥
 
-## Trait Profile: 3-2-1-1-3-2-3-2-Flexible
+## Trait Profile: 3-2-1-1-2-3-2-Flexible
 
 | Trait | Score | Meaning |
 |-------|-------|---------|
@@ -8,10 +8,9 @@
 | Feedback Frequency | 2 | Low - doesn't care about validation |
 | Energy | 1 | Very Low - very brief 1 sentence responses |
 | Effort Tolerance | 1 | Very Low - seeks all shortcuts |
-| Compliance | 3 | Moderate - grumbles but complies |
 | Attention Span | 2 | Low - zones out easily |
 | Mistakes | 3 | Moderate - errors from not trying |
-| Politeness | 2 | Low-Mod - blunt, sighs a lot |
+| Politeness | 2 | Blunt - occasionally direct/sighs |
 | Cognitive Style | Flexible | Wants whichever is FASTEST |
 
 ## Personality

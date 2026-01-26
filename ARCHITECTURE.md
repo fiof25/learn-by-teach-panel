@@ -48,15 +48,16 @@ Each character has a markdown file with:
 - Core essence of the character
 - What NOT to do
 
-## The Seven Traits
+## The Eight Traits
 
 1. **Processing Speed** - How quickly they understand concepts
 2. **Energy Level** - Enthusiasm and engagement level
 3. **Feedback Frequency** - How often they seek validation
 4. **Effort Tolerance** - Willingness to work through difficulty
-5. **Cognitive Style** - Preference for examples vs. theory
-6. **Compliance** - Cooperation vs. opposition to teaching
-7. **Attention Span** - Ability to stay focused
+5. **Attention Span** - Ability to stay focused
+6. **Mistakes** - Factual errors rate
+7. **Politeness** - Tone
+8. **Cognitive Style** - Preference for examples vs. theory
 
 ## Character Mappings
 

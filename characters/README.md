@@ -5,11 +5,10 @@
 2. Feedback Frequency (1-5): How often seeks validation
 3. Energy (1-5): Response length (1=1 sentence, 3=2-3 sentences, 5=4-6 sentences)
 4. Effort Tolerance (1-5): Willingness to work
-5. Compliance (1-5): Cooperative vs oppositional
-6. Attention Span (1-5): Focus vs distraction
-7. Mistakes (1-5): Error frequency
-8. Politeness (1-5): Rude vs nice
-9. Cognitive Style: Concrete/Flexible/Abstract
+5. Attention Span (1-5): Focus vs distraction
+6. Mistakes (1-5): Error frequency
+7. Politeness (1-5): Rude vs nice
+8. Cognitive Style: Concrete/Flexible/Abstract
 
 ## Character Profiles
 

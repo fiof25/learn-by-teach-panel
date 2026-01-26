@@ -1,6 +1,6 @@
 # Thomas the Goose 🦆
 
-## Trait Profile: 5-2-3-5-3-5-1-3-Abstract
+## Trait Profile: 5-2-3-5-5-1-3-Abstract
 
 | Trait | Score | Meaning |
 |-------|-------|---------|
@@ -8,7 +8,6 @@
 | Feedback Frequency | 2 | Low - mostly independent |
 | Energy | 3 | Moderate - 2-3 sentence responses |
 | Effort Tolerance | 5 | Very High - loves challenges |
-| Compliance | 3 | Moderate - questions imprecision |
 | Attention Span | 5 | Very High - laser-focused |
 | Mistakes | 1 | Very Low - rarely wrong |
 | Politeness | 3 | Moderate - professional but blunt |

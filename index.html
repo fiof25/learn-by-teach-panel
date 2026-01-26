@@ -56,39 +56,29 @@
             position: relative;
         }
 
-        .speech-bubble {
-            display: none;
+        .settings-icon {
             position: absolute;
-            background: white;
-            border: 2px solid #764ba2;
-            border-radius: 12px;
-            padding: 15px;
-            width: 220px;
-            z-index: 100;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            top: 12px;
+            right: 12px;
+            font-size: 18px;
+            cursor: pointer;
+            color: #ccc;
+            transition: color 0.2s, transform 0.3s;
+            line-height: 1;
+        }
+
+        .settings-icon:hover {
+            color: #667eea;
+            transform: rotate(90deg);
+        }
+
+        .tagline {
             font-size: 13px;
-            line-height: 1.5;
-            color: #444;
-            top: 95%;
-            left: 50%;
-            transform: translateX(-50%);
-            animation: popIn 0.2s ease-out;
-        }
-
-        .speech-bubble::after {
-            content: '';
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            margin-left: -10px;
-            border-width: 10px;
-            border-style: solid;
-            border-color: transparent transparent #764ba2 transparent;
-        }
-
-        @keyframes popIn {
-            0% { transform: translateX(-50%) scale(0.8); opacity: 0; }
-            100% { transform: translateX(-50%) scale(1); opacity: 1; }
+            color: #666;
+            line-height: 1.4;
+            margin-top: 8px;
+            font-style: italic;
+            min-height: 1.4em;
         }
 
         .panel:nth-child(1) .panel-header {
@@ -124,42 +114,6 @@
             font-weight: 700;
             color: #2c3e50;
             margin-bottom: 8px;
-        }
-
-        .stats-button {
-            padding: 6px 12px;
-            background: #667eea;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin: 0 4px;
-        }
-
-        .desc-button {
-            padding: 6px 12px;
-            background: #764ba2;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin: 0 4px;
-        }
-
-        .desc-button:hover {
-            background: #623d8b;
-            transform: translateY(-1px);
-        }
-
-        .stats-button:hover {
-            background: #5568d3;
-            transform: translateY(-1px);
         }
 
         .modal {
@@ -520,13 +474,10 @@
             <!-- Jamie (Beaver) -->
             <div class="panel" data-character="jamie">
                 <div class="panel-header">
+                    <div class="settings-icon" onclick="showStats('jamie')" title="View Stats">⚙️</div>
                     <img src="images/jamie.png" alt="Jamie the Beaver" class="panel-character-img">
                     <div class="panel-name">Jamie</div>
-                    <div style="display: flex; justify-content: center; gap: 4px; margin-bottom: 8px;">
-                        <button class="stats-button" onclick="showStats('jamie')">View Stats</button>
-                        <button class="desc-button" onclick="showDesc('jamie')">View Desc</button>
-                    </div>
-                    <div id="bubble-jamie" class="speech-bubble"></div>
+                    <div id="tagline-jamie" class="tagline">Loading...</div>
                 </div>
                 <div class="panel-content" id="panel-jamie"></div>
                 <div class="individual-input-container">
@@ -539,13 +490,10 @@
             <!-- Thomas (Goose) -->
             <div class="panel" data-character="thomas">
                 <div class="panel-header">
+                    <div class="settings-icon" onclick="showStats('thomas')" title="View Stats">⚙️</div>
                     <img src="images/thomas.png" alt="Thomas the Goose" class="panel-character-img">
                     <div class="panel-name">Thomas</div>
-                    <div style="display: flex; justify-content: center; gap: 4px; margin-bottom: 8px;">
-                        <button class="stats-button" onclick="showStats('thomas')">View Stats</button>
-                        <button class="desc-button" onclick="showDesc('thomas')">View Desc</button>
-                    </div>
-                    <div id="bubble-thomas" class="speech-bubble"></div>
+                    <div id="tagline-thomas" class="tagline">Loading...</div>
                 </div>
                 <div class="panel-content" id="panel-thomas"></div>
                 <div class="individual-input-container">
@@ -558,13 +506,10 @@
             <!-- Sam (Sloth) -->
             <div class="panel" data-character="sam">
                 <div class="panel-header">
+                    <div class="settings-icon" onclick="showStats('sam')" title="View Stats">⚙️</div>
                     <img src="images/sam.png" alt="Sam the Sloth" class="panel-character-img">
                     <div class="panel-name">Sam</div>
-                    <div style="display: flex; justify-content: center; gap: 4px; margin-bottom: 8px;">
-                        <button class="stats-button" onclick="showStats('sam')">View Stats</button>
-                        <button class="desc-button" onclick="showDesc('sam')">View Desc</button>
-                    </div>
-                    <div id="bubble-sam" class="speech-bubble"></div>
+                    <div id="tagline-sam" class="tagline">Loading...</div>
                 </div>
                 <div class="panel-content" id="panel-sam"></div>
                 <div class="individual-input-container">
@@ -577,13 +522,10 @@
             <!-- Alex (Crocodile) -->
             <div class="panel" data-character="alex">
                 <div class="panel-header">
+                    <div class="settings-icon" onclick="showStats('alex')" title="View Stats">⚙️</div>
                     <img src="images/alex.png" alt="Alex the Crocodile" class="panel-character-img">
                     <div class="panel-name">Alex</div>
-                    <div style="display: flex; justify-content: center; gap: 4px; margin-bottom: 8px;">
-                        <button class="stats-button" onclick="showStats('alex')">View Stats</button>
-                        <button class="desc-button" onclick="showDesc('alex')">View Desc</button>
-                    </div>
-                    <div id="bubble-alex" class="speech-bubble"></div>
+                    <div id="tagline-alex" class="tagline">Loading...</div>
                 </div>
                 <div class="panel-content" id="panel-alex"></div>
                 <div class="individual-input-container">
@@ -596,13 +538,10 @@
             <!-- Avery (Penguin) -->
             <div class="panel" data-character="avery">
                 <div class="panel-header">
+                    <div class="settings-icon" onclick="showStats('avery')" title="View Stats">⚙️</div>
                     <img src="images/avery.png" alt="Avery the Penguin" class="panel-character-img">
                     <div class="panel-name">Avery</div>
-                    <div style="display: flex; justify-content: center; gap: 4px; margin-bottom: 8px;">
-                        <button class="stats-button" onclick="showStats('avery')">View Stats</button>
-                        <button class="desc-button" onclick="showDesc('avery')">View Desc</button>
-                    </div>
-                    <div id="bubble-avery" class="speech-bubble"></div>
+                    <div id="tagline-avery" class="tagline">Loading...</div>
                 </div>
                 <div class="panel-content" id="panel-avery"></div>
                 <div class="individual-input-container">
@@ -902,39 +841,22 @@
             }
         }
 
-        async function showDesc(character) {
-            const bubble = document.getElementById(`bubble-${character}`);
-            
-            // If already showing, hide it
-            if (bubble.style.display === 'block') {
-                bubble.style.display = 'none';
-                return;
-            }
-
-            // Hide all other bubbles first
-            document.querySelectorAll('.speech-bubble').forEach(b => b.style.display = 'none');
-            
-            bubble.innerHTML = 'Loading...';
-            bubble.style.display = 'block';
-            
-            try {
-                const response = await fetch(`/api/character-stats/${character}`);
-                if (!response.ok) throw new Error('Failed to fetch description');
-                
-                const data = await response.json();
-                bubble.innerHTML = `<strong>Summary:</strong><br>${data.description}`;
-            } catch (error) {
-                bubble.innerHTML = `<span style="color: red;">Error: ${error.message}</span>`;
-            }
+        // Initialize taglines on load
+        async function loadTaglines() {
+            characters.forEach(async (character) => {
+                const taglineElement = document.getElementById(`tagline-${character}`);
+                try {
+                    const response = await fetch(`/api/character-stats/${character}`);
+                    if (!response.ok) throw new Error('Failed to fetch');
+                    const data = await response.json();
+                    taglineElement.textContent = data.description;
+                } catch (error) {
+                    taglineElement.textContent = "Personality profile loaded.";
+                    console.error(`Error loading tagline for ${character}:`, error);
+                }
+            });
         }
 
-        // Close bubbles when clicking outside
-        document.addEventListener('mousedown', (e) => {
-            if (!e.target.closest('.speech-bubble') && !e.target.closest('.desc-button')) {
-                document.querySelectorAll('.speech-bubble').forEach(b => b.style.display = 'none');
-            }
-        });
-        
         function closeModal() {
             const modal = document.getElementById('statsModal');
             modal.classList.remove('show');
@@ -956,6 +878,7 @@
         // Focus on message input on page load
         window.addEventListener('load', () => {
             messageInput.focus();
+            loadTaglines();
         });
     </script>
 </body>

@@ -53,6 +53,32 @@
             color: #333;
             text-align: center;
             border-bottom: 3px solid #f0f0f0;
+            position: relative;
+        }
+
+        .settings-icon {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            font-size: 18px;
+            cursor: pointer;
+            color: #ccc;
+            transition: color 0.2s, transform 0.3s;
+            line-height: 1;
+        }
+
+        .settings-icon:hover {
+            color: #667eea;
+            transform: rotate(90deg);
+        }
+
+        .tagline {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.4;
+            margin-top: 8px;
+            font-style: italic;
+            min-height: 1.4em;
         }
 
         .panel:nth-child(1) .panel-header {
@@ -88,23 +114,6 @@
             font-weight: 700;
             color: #2c3e50;
             margin-bottom: 8px;
-        }
-
-        .stats-button {
-            padding: 6px 12px;
-            background: #667eea;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .stats-button:hover {
-            background: #5568d3;
-            transform: translateY(-1px);
         }
 
         .modal {
@@ -465,9 +474,10 @@
             <!-- Jamie (Beaver) -->
             <div class="panel" data-character="jamie">
                 <div class="panel-header">
+                    <div class="settings-icon" onclick="showStats('jamie')" title="View Stats">⚙️</div>
                     <img src="images/jamie.png" alt="Jamie the Beaver" class="panel-character-img">
                     <div class="panel-name">Jamie</div>
-                    <button class="stats-button" onclick="showStats('jamie')">View Stats</button>
+                    <div id="tagline-jamie" class="tagline">Loading...</div>
                 </div>
                 <div class="panel-content" id="panel-jamie"></div>
                 <div class="individual-input-container">
@@ -480,9 +490,10 @@
             <!-- Thomas (Goose) -->
             <div class="panel" data-character="thomas">
                 <div class="panel-header">
+                    <div class="settings-icon" onclick="showStats('thomas')" title="View Stats">⚙️</div>
                     <img src="images/thomas.png" alt="Thomas the Goose" class="panel-character-img">
                     <div class="panel-name">Thomas</div>
-                    <button class="stats-button" onclick="showStats('thomas')">View Stats</button>
+                    <div id="tagline-thomas" class="tagline">Loading...</div>
                 </div>
                 <div class="panel-content" id="panel-thomas"></div>
                 <div class="individual-input-container">
@@ -495,9 +506,10 @@
             <!-- Sam (Sloth) -->
             <div class="panel" data-character="sam">
                 <div class="panel-header">
+                    <div class="settings-icon" onclick="showStats('sam')" title="View Stats">⚙️</div>
                     <img src="images/sam.png" alt="Sam the Sloth" class="panel-character-img">
                     <div class="panel-name">Sam</div>
-                    <button class="stats-button" onclick="showStats('sam')">View Stats</button>
+                    <div id="tagline-sam" class="tagline">Loading...</div>
                 </div>
                 <div class="panel-content" id="panel-sam"></div>
                 <div class="individual-input-container">
@@ -510,9 +522,10 @@
             <!-- Alex (Crocodile) -->
             <div class="panel" data-character="alex">
                 <div class="panel-header">
+                    <div class="settings-icon" onclick="showStats('alex')" title="View Stats">⚙️</div>
                     <img src="images/alex.png" alt="Alex the Crocodile" class="panel-character-img">
                     <div class="panel-name">Alex</div>
-                    <button class="stats-button" onclick="showStats('alex')">View Stats</button>
+                    <div id="tagline-alex" class="tagline">Loading...</div>
                 </div>
                 <div class="panel-content" id="panel-alex"></div>
                 <div class="individual-input-container">
@@ -525,9 +538,10 @@
             <!-- Avery (Penguin) -->
             <div class="panel" data-character="avery">
                 <div class="panel-header">
+                    <div class="settings-icon" onclick="showStats('avery')" title="View Stats">⚙️</div>
                     <img src="images/avery.png" alt="Avery the Penguin" class="panel-character-img">
                     <div class="panel-name">Avery</div>
-                    <button class="stats-button" onclick="showStats('avery')">View Stats</button>
+                    <div id="tagline-avery" class="tagline">Loading...</div>
                 </div>
                 <div class="panel-content" id="panel-avery"></div>
                 <div class="individual-input-container">
@@ -845,9 +859,26 @@
             }
         });
 
+        // Initialize taglines on load
+        async function loadTaglines() {
+            characters.forEach(async (character) => {
+                const taglineElement = document.getElementById(`tagline-${character}`);
+                try {
+                    const response = await fetch(`/api/character-stats/${character}`);
+                    if (!response.ok) throw new Error('Failed to fetch');
+                    const data = await response.json();
+                    taglineElement.textContent = data.description;
+                } catch (error) {
+                    taglineElement.textContent = "Personality profile loaded.";
+                    console.error(`Error loading tagline for ${character}:`, error);
+                }
+            });
+        }
+
         // Focus on message input on page load
         window.addEventListener('load', () => {
             messageInput.focus();
+            loadTaglines();
         });
     </script>
 </body>

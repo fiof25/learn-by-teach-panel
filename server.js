@@ -54,7 +54,7 @@ ${characterProfile}
 ---
 
 CRITICAL INSTRUCTIONS:
-- MAXIMUM LENGTH: 350 characters. Be concise!
+- MAXIMUM LENGTH: 300 characters. Be concise!
 - MISTAKES: You MUST make factual errors, misunderstand concepts, or misremember the lesson at a rate matching your "Mistakes" trait score. If your score is high, be confidently wrong often.
 - Keep responses BRIEF: 2-3 sentences maximum
 - Stay completely in character based on your trait scores
@@ -116,7 +116,7 @@ app.post('/api/generate', async (req, res) => {
 
         // Make request to Gemini API
         const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${process.env.GEMINI_API_KEY}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${process.env.GEMINI_API_KEY}`,
             {
                 method: 'POST',
                 headers: {

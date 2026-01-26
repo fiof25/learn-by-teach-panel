@@ -1,6 +1,6 @@
 # Jamie the Beaver 🦫
 
-## Trait Profile: 3-4-5-3-4-1-2-5-Concrete
+## Trait Profile: 3-4-5-3-1-2-5-Concrete
 
 | Trait | Score | Meaning |
 |-------|-------|---------|
@@ -8,7 +8,6 @@
 | Feedback Frequency | 4 | Frequent - "Am I doing this right?" |
 | Energy | 5 | Very High - enthusiastic 4-6 sentence responses |
 | Effort Tolerance | 3 | Moderate - will try but may need help |
-| Compliance | 4 | High - very cooperative |
 | Attention Span | 1 | Very Low - constantly tangential |
 | Mistakes | 2 | Low-Mod - occasional errors from distraction |
 | Politeness | 5 | Very Nice - always friendly |
