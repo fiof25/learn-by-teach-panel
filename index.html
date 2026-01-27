@@ -17,15 +17,69 @@
             display: flex;
             flex-direction: column;
             background: linear-gradient(to bottom, #e8f4f8 0%, #f9f9f9 100%);
+            overflow: hidden;
         }
 
         .container {
             display: flex;
+            flex-direction: row;
+            height: 100vh;
+            width: 100vw;
+            max-width: none;
+            margin: 0;
+        }
+
+        .side-panel {
+            width: 200px;
+            background: white;
+            border-right: 2px solid #eee;
+            display: flex;
             flex-direction: column;
-            height: 100%;
-            max-width: 1800px;
-            margin: 0 auto;
-            width: 100%;
+            padding: 20px;
+            gap: 10px;
+            z-index: 500;
+            flex-shrink: 0;
+        }
+
+        .nav-btn {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            font-weight: 600;
+            transition: all 0.2s;
+            background: transparent;
+            color: #666;
+        }
+
+        .nav-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .nav-btn:hover:not(.active) {
+            background: #f0f4ff;
+            color: #667eea;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .mode-view {
+            display: none;
+            flex: 1;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .mode-view.active {
+            display: flex;
         }
 
         .panels-container {
@@ -34,7 +88,7 @@
             grid-template-columns: repeat(5, 1fr);
             gap: 12px;
             padding: 12px;
-            overflow: hidden;
+            overflow-y: auto;
         }
 
         .panel {
@@ -470,100 +524,141 @@
 </head>
 <body>
     <div class="container">
-        <div class="panels-container">
-            <!-- Jamie (Beaver) -->
-            <div class="panel" data-character="jamie">
-                <div class="panel-header">
-                    <div class="settings-icon" onclick="showStats('jamie')" title="View Stats">⚙️</div>
-                    <img src="images/jamie.png" alt="Jamie the Beaver" class="panel-character-img">
-                    <div class="panel-name">Jamie</div>
-                    <div id="tagline-jamie" class="tagline">Loading...</div>
-                </div>
-                <div class="panel-content" id="panel-jamie"></div>
-                <div class="individual-input-container">
-                    <button class="individual-quiz-btn" onclick="askWhatLearned('jamie')">Quiz 💡</button>
-                    <input type="text" class="individual-input" placeholder="Chat with Jamie..." onkeydown="handleIndividualKey(event, 'jamie')">
-                    <button class="individual-send-btn" onclick="sendIndividualMessage('jamie')">Send</button>
-                </div>
-            </div>
-
-            <!-- Thomas (Goose) -->
-            <div class="panel" data-character="thomas">
-                <div class="panel-header">
-                    <div class="settings-icon" onclick="showStats('thomas')" title="View Stats">⚙️</div>
-                    <img src="images/thomas.png" alt="Thomas the Goose" class="panel-character-img">
-                    <div class="panel-name">Thomas</div>
-                    <div id="tagline-thomas" class="tagline">Loading...</div>
-                </div>
-                <div class="panel-content" id="panel-thomas"></div>
-                <div class="individual-input-container">
-                    <button class="individual-quiz-btn" onclick="askWhatLearned('thomas')">Quiz 💡</button>
-                    <input type="text" class="individual-input" placeholder="Chat with Thomas..." onkeydown="handleIndividualKey(event, 'thomas')">
-                    <button class="individual-send-btn" onclick="sendIndividualMessage('thomas')">Send</button>
-                </div>
-            </div>
-
-            <!-- Sam (Sloth) -->
-            <div class="panel" data-character="sam">
-                <div class="panel-header">
-                    <div class="settings-icon" onclick="showStats('sam')" title="View Stats">⚙️</div>
-                    <img src="images/sam.png" alt="Sam the Sloth" class="panel-character-img">
-                    <div class="panel-name">Sam</div>
-                    <div id="tagline-sam" class="tagline">Loading...</div>
-                </div>
-                <div class="panel-content" id="panel-sam"></div>
-                <div class="individual-input-container">
-                    <button class="individual-quiz-btn" onclick="askWhatLearned('sam')">Quiz 💡</button>
-                    <input type="text" class="individual-input" placeholder="Chat with Sam..." onkeydown="handleIndividualKey(event, 'sam')">
-                    <button class="individual-send-btn" onclick="sendIndividualMessage('sam')">Send</button>
-                </div>
-            </div>
-
-            <!-- Alex (Crocodile) -->
-            <div class="panel" data-character="alex">
-                <div class="panel-header">
-                    <div class="settings-icon" onclick="showStats('alex')" title="View Stats">⚙️</div>
-                    <img src="images/alex.png" alt="Alex the Crocodile" class="panel-character-img">
-                    <div class="panel-name">Alex</div>
-                    <div id="tagline-alex" class="tagline">Loading...</div>
-                </div>
-                <div class="panel-content" id="panel-alex"></div>
-                <div class="individual-input-container">
-                    <button class="individual-quiz-btn" onclick="askWhatLearned('alex')">Quiz 💡</button>
-                    <input type="text" class="individual-input" placeholder="Chat with Alex..." onkeydown="handleIndividualKey(event, 'alex')">
-                    <button class="individual-send-btn" onclick="sendIndividualMessage('alex')">Send</button>
-                </div>
-            </div>
-
-            <!-- Avery (Penguin) -->
-            <div class="panel" data-character="avery">
-                <div class="panel-header">
-                    <div class="settings-icon" onclick="showStats('avery')" title="View Stats">⚙️</div>
-                    <img src="images/avery.png" alt="Avery the Penguin" class="panel-character-img">
-                    <div class="panel-name">Avery</div>
-                    <div id="tagline-avery" class="tagline">Loading...</div>
-                </div>
-                <div class="panel-content" id="panel-avery"></div>
-                <div class="individual-input-container">
-                    <button class="individual-quiz-btn" onclick="askWhatLearned('avery')">Quiz 💡</button>
-                    <input type="text" class="individual-input" placeholder="Chat with Avery..." onkeydown="handleIndividualKey(event, 'avery')">
-                    <button class="individual-send-btn" onclick="sendIndividualMessage('avery')">Send</button>
-                </div>
+        <!-- Side Panel -->
+        <div class="side-panel">
+            <div style="font-weight: 800; font-size: 18px; color: #2c3e50; margin-bottom: 20px; border-bottom: 2px solid #667eea; padding-bottom: 10px;">Modes</div>
+            <button class="nav-btn active" onclick="switchMode('comparison')">👥 Comparison</button>
+            <button class="nav-btn" onclick="switchMode('mystery')">❓ Mystery</button>
+            
+            <div id="mystery-controls" style="display: none; margin-top: auto; padding-top: 20px; border-top: 1px solid #eee;">
+                <div style="font-size: 11px; font-weight: 800; color: #999; text-transform: uppercase; margin-bottom: 10px;">Secret Selection</div>
+                <select id="secret-character-select" onchange="setMysteryCharacter(this.value)" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ddd; outline: none;">
+                    <option value="jamie">Jamie</option>
+                    <option value="thomas">Thomas</option>
+                    <option value="sam">Sam</option>
+                    <option value="alex">Alex</option>
+                    <option value="avery">Avery</option>
+                </select>
             </div>
         </div>
 
-        <div class="input-container">
-            <div class="input-wrapper">
-                <textarea 
-                    class="input-box" 
-                    id="messageInput" 
-                    placeholder="Type your message here..."
-                    rows="1"
-                    style="flex: 1;"
-                ></textarea>
-                <button class="send-button" id="sendButton" onclick="sendMessage()">
-                    Send ▶
-                </button>
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Comparison View -->
+            <div id="comparison-view" class="mode-view active">
+                <div class="panels-container">
+                    <!-- Jamie (Beaver) -->
+                    <div class="panel" data-character="jamie">
+                        <div class="panel-header">
+                            <div class="settings-icon" onclick="showStats('jamie')" title="View Stats">⚙️</div>
+                            <img src="images/jamie.png" alt="Jamie the Beaver" class="panel-character-img">
+                            <div class="panel-name">Jamie</div>
+                            <div id="tagline-jamie" class="tagline">Loading...</div>
+                        </div>
+                        <div class="panel-content" id="panel-jamie"></div>
+                        <div class="individual-input-container">
+                            <button class="individual-quiz-btn" onclick="askWhatLearned('jamie')">Quiz 💡</button>
+                            <input type="text" class="individual-input" placeholder="Chat with Jamie..." onkeydown="handleIndividualKey(event, 'jamie')">
+                            <button class="individual-send-btn" onclick="sendIndividualMessage('jamie')">Send</button>
+                        </div>
+                    </div>
+
+                    <!-- Thomas (Goose) -->
+                    <div class="panel" data-character="thomas">
+                        <div class="panel-header">
+                            <div class="settings-icon" onclick="showStats('thomas')" title="View Stats">⚙️</div>
+                            <img src="images/thomas.png" alt="Thomas the Goose" class="panel-character-img">
+                            <div class="panel-name">Thomas</div>
+                            <div id="tagline-thomas" class="tagline">Loading...</div>
+                        </div>
+                        <div class="panel-content" id="panel-thomas"></div>
+                        <div class="individual-input-container">
+                            <button class="individual-quiz-btn" onclick="askWhatLearned('thomas')">Quiz 💡</button>
+                            <input type="text" class="individual-input" placeholder="Chat with Thomas..." onkeydown="handleIndividualKey(event, 'thomas')">
+                            <button class="individual-send-btn" onclick="sendIndividualMessage('thomas')">Send</button>
+                        </div>
+                    </div>
+
+                    <!-- Sam (Sloth) -->
+                    <div class="panel" data-character="sam">
+                        <div class="panel-header">
+                            <div class="settings-icon" onclick="showStats('sam')" title="View Stats">⚙️</div>
+                            <img src="images/sam.png" alt="Sam the Sloth" class="panel-character-img">
+                            <div class="panel-name">Sam</div>
+                            <div id="tagline-sam" class="tagline">Loading...</div>
+                        </div>
+                        <div class="panel-content" id="panel-sam"></div>
+                        <div class="individual-input-container">
+                            <button class="individual-quiz-btn" onclick="askWhatLearned('sam')">Quiz 💡</button>
+                            <input type="text" class="individual-input" placeholder="Chat with Sam..." onkeydown="handleIndividualKey(event, 'sam')">
+                            <button class="individual-send-btn" onclick="sendIndividualMessage('sam')">Send</button>
+                        </div>
+                    </div>
+
+                    <!-- Alex (Crocodile) -->
+                    <div class="panel" data-character="alex">
+                        <div class="panel-header">
+                            <div class="settings-icon" onclick="showStats('alex')" title="View Stats">⚙️</div>
+                            <img src="images/alex.png" alt="Alex the Crocodile" class="panel-character-img">
+                            <div class="panel-name">Alex</div>
+                            <div id="tagline-alex" class="tagline">Loading...</div>
+                        </div>
+                        <div class="panel-content" id="panel-alex"></div>
+                        <div class="individual-input-container">
+                            <button class="individual-quiz-btn" onclick="askWhatLearned('alex')">Quiz 💡</button>
+                            <input type="text" class="individual-input" placeholder="Chat with Alex..." onkeydown="handleIndividualKey(event, 'alex')">
+                            <button class="individual-send-btn" onclick="sendIndividualMessage('alex')">Send</button>
+                        </div>
+                    </div>
+
+                    <!-- Avery (Penguin) -->
+                    <div class="panel" data-character="avery">
+                        <div class="panel-header">
+                            <div class="settings-icon" onclick="showStats('avery')" title="View Stats">⚙️</div>
+                            <img src="images/avery.png" alt="Avery the Penguin" class="panel-character-img">
+                            <div class="panel-name">Avery</div>
+                            <div id="tagline-avery" class="tagline">Loading...</div>
+                        </div>
+                        <div class="panel-content" id="panel-avery"></div>
+                        <div class="individual-input-container">
+                            <button class="individual-quiz-btn" onclick="askWhatLearned('avery')">Quiz 💡</button>
+                            <input type="text" class="individual-input" placeholder="Chat with Avery..." onkeydown="handleIndividualKey(event, 'avery')">
+                            <button class="individual-send-btn" onclick="sendIndividualMessage('avery')">Send</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-container">
+                    <div class="input-wrapper">
+                        <textarea 
+                            class="input-box" 
+                            id="messageInput" 
+                            placeholder="Type your message here..."
+                            rows="1"
+                            style="flex: 1;"
+                        ></textarea>
+                        <button class="send-button" id="sendButton" onclick="sendMessage()">
+                            Send ▶
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mystery View -->
+            <div id="mystery-view" class="mode-view" style="padding: 20px; align-items: center; justify-content: center;">
+                <div class="panel" data-character="mystery" style="width: 100%; max-width: 600px; height: 100%;">
+                    <div class="panel-header">
+                        <div style="font-size: 64px; margin-bottom: 10px;">❓</div>
+                        <div class="panel-name">Mystery Student (?)</div>
+                        <div class="tagline">Who could this be? Learn more through conversation...</div>
+                    </div>
+                    <div class="panel-content" id="panel-mystery"></div>
+                    <div class="individual-input-container">
+                        <button class="individual-quiz-btn" onclick="askWhatLearned('mystery')">Quiz 💡</button>
+                        <input type="text" class="individual-input" placeholder="Chat with Mystery Student..." onkeydown="handleIndividualKey(event, 'mystery')">
+                        <button class="individual-send-btn" onclick="sendIndividualMessage('mystery')">Send</button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -581,6 +676,7 @@
 
     <script>
         const characters = ['jamie', 'thomas', 'sam', 'alex', 'avery'];
+        let mysteryCharacter = 'jamie'; // Default mystery character
         
         // Maintain chat history for each character
         const chatHistories = {
@@ -588,23 +684,26 @@
             thomas: [],
             sam: [],
             alex: [],
-            avery: []
+            avery: [],
+            mystery: []
         };
 
         // Auto-resize textarea
         const messageInput = document.getElementById('messageInput');
-        messageInput.addEventListener('input', function() {
-            this.style.height = 'auto';
-            this.style.height = this.scrollHeight + 'px';
-        });
+        if (messageInput) {
+            messageInput.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = this.scrollHeight + 'px';
+            });
 
-        // Send on Enter (Shift+Enter for new line)
-        messageInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
+            // Send on Enter (Shift+Enter for new line)
+            messageInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+        }
 
         function addMessage(character, role, content) {
             const panel = document.getElementById(`panel-${character}`);
@@ -613,7 +712,7 @@
             
             const label = document.createElement('div');
             label.className = 'message-label';
-            label.textContent = role === 'user' ? 'You' : character.charAt(0).toUpperCase() + character.slice(1);
+            label.textContent = role === 'user' ? 'You' : (character === 'mystery' ? 'Mystery' : character.charAt(0).toUpperCase() + character.slice(1));
             
             const text = document.createElement('div');
             text.textContent = content;
@@ -654,14 +753,45 @@
             panel.scrollTop = panel.scrollHeight;
         }
 
+        function switchMode(mode) {
+            const comparisonView = document.getElementById('comparison-view');
+            const mysteryView = document.getElementById('mystery-view');
+            const mysteryControls = document.getElementById('mystery-controls');
+            const navBtns = document.querySelectorAll('.nav-btn');
+            
+            navBtns.forEach(btn => btn.classList.remove('active'));
+            
+            if (mode === 'comparison') {
+                comparisonView.classList.add('active');
+                mysteryView.classList.remove('active');
+                mysteryControls.style.display = 'none';
+                navBtns[0].classList.add('active');
+            } else {
+                comparisonView.classList.remove('active');
+                mysteryView.classList.add('active');
+                mysteryControls.style.display = 'block';
+                navBtns[1].classList.add('active');
+            }
+        }
+
+        function setMysteryCharacter(val) {
+            mysteryCharacter = val;
+            // Clear history when switching secret character to keep it consistent
+            chatHistories.mystery = [];
+            document.getElementById('panel-mystery').innerHTML = '';
+        }
+
+        // Modified callGemini to handle mystery mode
         async function callGemini(character, userMessage) {
+            const actualCharacter = (character === 'mystery') ? mysteryCharacter : character;
+            
             const response = await fetch('/api/generate', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    character: character,
+                    character: actualCharacter,
                     message: userMessage,
                     history: chatHistories[character] // Send history to backend
                 })
