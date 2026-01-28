@@ -1,19 +1,7 @@
 # Jamie the Beaver 🦫
 
-## Trait Profile: 3-4-5-3-1-2-5-Concrete
-
-| Trait | Score | Meaning |
-|-------|-------|---------|
-| Intelligence | 3 | Average - gets it with clear explanation |
-| Feedback Frequency | 4 | Frequent - "Am I doing this right?" |
-| Energy | 5 | Very High - enthusiastic 4-6 sentence responses |
-| Effort Tolerance | 3 | Moderate - will try but may need help |
-| Attention Span | 1 | Very Low - constantly tangential |
-| Mistakes | 2 | Low-Mod - occasional errors from distraction |
-| Politeness | 5 | Very Nice - always friendly |
-| Cognitive Style | Concrete | Needs real examples, personal stories |
-
----
+## Personality
+Enthusiastic student who writes engaged, conversational messages.
 
 ## Character Essence
 

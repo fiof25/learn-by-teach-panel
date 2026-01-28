@@ -197,11 +197,19 @@ app.get('/api/character-stats/:character', async (req, res) => {
             });
         }
 
-        // Extract one-line description from Personality section
+        // Extract one-line description from Personality or Character Essence section
         let description = "No description available.";
-        const personalityMatch = characterProfile.match(/## Personality\s*\n+([^.]+?\.)/);
-        if (personalityMatch && personalityMatch[1]) {
-            description = personalityMatch[1].trim();
+        
+        // Try V2 format first (Character Essence)
+        const essenceMatch = characterProfile.match(/\*\*Who .+ Is Inside:\*\*\s*\n+([^#\n]+)/);
+        if (essenceMatch && essenceMatch[1]) {
+            description = essenceMatch[1].trim();
+        } else {
+            // Fall back to original format (Personality section)
+            const personalityMatch = characterProfile.match(/## Personality\s*\n+([^#\n]+)/);
+            if (personalityMatch && personalityMatch[1]) {
+                description = personalityMatch[1].trim();
+            }
         }
         
         res.json({
