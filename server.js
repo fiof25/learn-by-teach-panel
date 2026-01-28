@@ -9,8 +9,8 @@ const PORT = process.env.PORT || 3000;
 
 // Character name to file mapping
 const CHARACTER_FILES = {
-    'jamie': 'JAMIE_BEAVER.md',
-    'thomas': 'THOMAS_GOOSE.md',
+    'jamie': 'JAMIE_BEAVER_V2.md',
+    'thomas': 'THOMAS_GOOSE_V2.md',
     'sam': 'SAM_SLOTH.md',
     'alex': 'ALEX_CROCODILE.md',
     'avery': 'AVERY_PENGUIN.md'
@@ -54,13 +54,13 @@ ${characterProfile}
 ---
 
 CRITICAL INSTRUCTIONS:
-- MAXIMUM LENGTH: 250 characters. Be concise!
+- RESPONSE LENGTH: Aim for 200-300 characters. 
+- IMPORTANT: ALWAYS finish your sentence and your thought. NEVER stop abruptly or mid-sentence.
 - KNOWLEDGE BOUNDARY: You only know what the user has taught you. If they teach you something wrong, you believe it. Never correct the teacher.
 - MISTAKES: You MUST make factual errors, misunderstand concepts, or misremember the lesson at a rate matching your "Mistakes" trait score. If your score is high, be confidently wrong often.
-- Keep responses BRIEF: 2-3 sentences maximum
-- Stay completely in character based on your trait scores
-- Never break character or explain teaching strategies
-- Respond authentically as this specific student would respond`;
+- Keep responses BRIEF and conversational.
+- Stay completely in character based on your trait scores.
+- Respond authentically as this specific student would respond.`;
 }
 
 // Middleware
@@ -117,7 +117,7 @@ app.post('/api/generate', async (req, res) => {
 
         // Make request to Gemini API
         const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-pro-preview:generateContent?key=${process.env.GEMINI_API_KEY}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${process.env.GEMINI_API_KEY}`,
             {
                 method: 'POST',
                 headers: {
@@ -131,8 +131,8 @@ app.post('/api/generate', async (req, res) => {
                         }]
                     },
                     generationConfig: {
-                        maxOutputTokens: 1000,
-                        temperature: 0.9
+                        maxOutputTokens: 2048,
+                        temperature: 0.8
                     }
                 })
             }
